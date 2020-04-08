@@ -7,3 +7,4 @@ tensorflow==2.2.0rc1
 tensorflow-estimator==2.2.0rc0
 matplotlib
 tqdm
+keras-tqdm
