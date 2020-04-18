@@ -122,18 +122,42 @@ Next we will talk about the architecture of the model.
 ### Generator
 The generator should take an input image and create an image with the same structure, but different appearence. The authors use an encoder-decoder structure where they first downsample the input $x$ multiple times and then upsample it again to the original dimension.
 
-<img src="misc/images/Encoder-decoder.png" height=200 width=336 />
-
- The downsampling creates an information bottleneck, but for many use cases you don't want to lose that much information while creating the new image. One example is image colorization, in which the objects displayed in input $x$ and output $y$ should be at the same position in the images. 
-
-<!---<div>
+<div>
 <img src="misc/images/Encoder-decoder.png" height=200 width=336 hspace="20"/>
 <img src="misc/images/unet.png" height=200 width=336 hspace="20"/>
-</div>--->
+</div>
 
-To give the network the option to use the non-downsampled data, we add skip connections between mirrored layers of the encoder and the corresponding decoder layer.
+The downsampling creates an information bottleneck, because we lose a lot of information about where things are located. For many use cases you don't want to lose that much information while creating the new image. One example is image colorization, in which the objects displayed in input $x$ and output $y$ should be at the same position in the images. 
 
-<img src="misc/images/unet.png" height=200 width=336 />
+The paper from [Ronneberger, O. (2015)](https://arxiv.org/abs/1505.04597) introduced a type of CNN called UNet. The UNet is a special kind of encoder-decoder that adds skip connections between mirrored layers of the encoder and the corresponding decoder layer. By doing so we retain information about the higher resolution location and combine that during the decoding step with the output of our encoder. In the original UNet implementation they used a max pooling layer for downsampling. As said above the pix2pix authors followed the advice from [Radford, A. (2016)](https://arxiv.org/abs/1511.06434) and did not use maxpooling. 
+
+Like for the discriminator, the following lists describe the encoder and decoder generator.
+
+All convolutions of the encoder downsample the image and also apply batchnorm (except the first convolution).
+
+encoder: (Leaky ReLU (slope = 0.2))
+* C64
+* C128
+* C256
+* C512
+* C512
+* C512
+* C512
+* C512
+
+All decoder convolutions upsample the image and apply batchnorm. As said before, we use the UNet structure for the generator. This means that we have connections from the i-th layer to the (n - i)-th layer of the autoencoder.
+
+UNet decoder: (ReLU)
+* CD512
+* CD1024
+* CD1024
+* C1024
+* C1024
+* C512
+* C256
+* C128
+* reduction to output channels
+* tanh
 
 ```python
 class Generator(Model):
@@ -173,7 +197,8 @@ class Generator(Model):
         x7 = self.enc_conv7(x6)
         x8 = self.enc_conv8(x7)
         
-        #decoder
+        # decoder
+        # implementing skip connections by concatenation
         x = self.dec_conv1(x8)
         x = self.dec_conv2(tf.keras.layers.concatenate([x, x7]))
         x = self.dec_conv3(tf.keras.layers.concatenate([x, x6]))
@@ -189,9 +214,44 @@ class Generator(Model):
 ```
 
 ### Discriminator
-# TODO: reformulieren
-For the generator loss we use the combined loss of the discriminator and the L1-loss. The L1-loss punishes errors at the low frequencies, so we use the GAN discriminator to enforce low-frequency correctness. The discriminator only classifies if each $N * N$-Patch of the image is real or fake and is applied by convolution to the whole image. This type of discriminator is called PatchGAN and "can be understood as a form of texture/style loss".
+<!--For the generator loss we use the combined loss of the discriminator and the L1-loss. The L1-loss punishes errors at the low frequencies, so we use the GAN discriminator to enforce low-frequency correctness. The discriminator only classifies if each $N * N$-Patch of the image is real or fake and is applied by convolution to the whole image. This type of discriminator is called PatchGAN and "can be understood as a form of texture/style loss". -->
 
+The discriminator gets the same input image that the generator used to create an image and an additional image, which either is the original or the generated image. It learns to discriminate between a generated and a real image.
+
+The authors named their specific discriminator *PatchGAN*. This discriminator only classifies if a $N * N$-patch of the image is real or fake and is applied by convolution to the whole image. Thereby it punishes local errors in the image and assumes independence to pixels outside of the patch. The results of all patches are averaged to get a classification for the whole image.
+An advantage of *PatchGAN* is that a trained discriminator can be applied to larger images than it was trained on. The paper shows that the $70 * 70$ discriminator gives a great balance between quality and training time. 
+
+Below is the smaller $16 * 16$ discriminator which also uses the described *C*-layer. Remember that each *C*-layer downsamples with $\text{kernel_size}=4$ and $\text{strides}=2$.
+We implemented the patch sizes $N = \{16, 70, 286\}$ that can all be found in `pix2pix.ipynb`. The c<!-- and used the 70x70 for most experiments --- maybe put all of this in the Experiments chapter? -->
+
+```python
+# 16 x 16 discriminator:
+class Discriminator16(Model):
+    def __init__(self):
+        super(Discriminator16, self).__init__()
+        self.conv1 = C(k=64, activation=tf.keras.layers.LeakyReLU(alpha=0.2), sampling="down", batchnorm=False)
+        self.conv2 = C(k=128, activation=tf.keras.layers.LeakyReLU(alpha=0.2), sampling="down")
+        
+        # flatten and dense with one neuron and sigmoid is the same as conv to 1D and sigmoid
+        self.flatten = tf.keras.layers.Flatten()
+        self.out = tf.keras.layers.Dense(1, activation=tf.keras.activations.sigmoid)
+        
+    def call(self, x, y):
+        """Calls the discriminator with input x and generator output or the original image y """
+        x = tf.keras.layers.concatenate([x, y])
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.flatten(x)
+        x = self.out(x)
+        return x
+```
+
+### Training
+### Loss
+After 
+
+
+The Discriminator
 
 ### 3.1 Experiments
 #### facades
