@@ -33,7 +33,7 @@ It is also important to mention that the pix2pix paper is not the first paper to
 * U-NET is notable
 * PatchGAN classifier (from 38)
 
-A lot of the base architecture is based on [Radford, A. (2016)](https://arxiv.org/abs/1511.06434) who gave some architecture guidelines for deep convolutional GANs that are also fully used here: 
+A lot of the base architecture of the pix2pix model is based on [Radford, A. (2016)](https://arxiv.org/abs/1511.06434) who gave some architecture guidelines for deep convolutional GANs that are fully implemented in this paper: 
 
 >Architecture guidelines for stable Deep Convolutional GANs:
 >* Replace any pooling layers with strided ,convolutions (discriminator) and fractional-strided convolutions (generator).
@@ -42,7 +42,7 @@ A lot of the base architecture is based on [Radford, A. (2016)](https://arxiv.or
 >* Use ReLU activation in generator for all layers except for the output, which uses Tanh.
 >* Use LeakyReLU activation in the discriminator for all layers.
 
-The paper defines the following types of convolutional layers that we implemented first. 
+The paper defines the following types of convolutional layers that we decided to implement first. 
 
 * C(k)
   * Convolution (k filters; 4x4; stride 2)
@@ -119,12 +119,12 @@ class CD(C):
 
 Next we will talk about the architecture of the model. 
 
-### Generator s
-The generator should take an input image and create an image with the same structure, but different appearence. We use an encoder-decoder structure where we first downsample the input $x$ multiple times and then upsample it again to the original dimension.
+### Generator
+The generator should take an input image and create an image with the same structure, but different appearence. The authors use an encoder-decoder structure where they first downsample the input $x$ multiple times and then upsample it again to the original dimension.
 
 <img src="misc/images/Encoder-decoder.png" height=200 width=336 />
 
- The downsampling creates an information bottleneck, but for many use cases we don't want to lose that much information while creating the new image. One example is image colorization, in which the edges of input $x$ and output $y$ should basically be the same. 
+ The downsampling creates an information bottleneck, but for many use cases you don't want to lose that much information while creating the new image. One example is image colorization, in which the objects displayed in input $x$ and output $y$ should be at the same position in the images. 
 
 <!---<div>
 <img src="misc/images/Encoder-decoder.png" height=200 width=336 hspace="20"/>
@@ -133,7 +133,7 @@ The generator should take an input image and create an image with the same struc
 
 To give the network the option to use the non-downsampled data, we add skip connections between mirrored layers of the encoder and the corresponding decoder layer.
 
- <img src="misc/images/unet.png" height=200 width=336 />
+<img src="misc/images/unet.png" height=200 width=336 />
 
 ```python
 class Generator(Model):
@@ -189,6 +189,8 @@ class Generator(Model):
 ```
 
 ### Discriminator
+# TODO: reformulieren
+For the generator loss we use the combined loss of the discriminator and the L1-loss. The L1-loss punishes errors at the low frequencies, so we use the GAN discriminator to enforce low-frequency correctness. The discriminator only classifies if each $N * N$-Patch of the image is real or fake and is applied by convolution to the whole image. This type of discriminator is called PatchGAN and "can be understood as a form of texture/style loss".
 
 
 ### 3.1 Experiments
