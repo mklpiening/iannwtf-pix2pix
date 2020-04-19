@@ -285,6 +285,25 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 
 With the Adam optimizer and these losses we update the weights of the generator and discriminator.
 
+### Keas model
+To ease up the implementation of new examples for our pix2pix model, we combined the generator and discriminator into one class that derives from `tf.keras.Model`.
+This class also includes the loss functions as well as the functions keras recommends to implement.
+These functions are mainly used for prediction of results, training of the model and testing of the model.
+
+The function `fit` takes numpy arrays of inputs and targets in addition to some variables like batch_size or epochs to train the model.
+Before training the discriminator and generator however the data will be prepared for training.
+As a part of this process, the dataset will be split up into training and testing dataset.
+If the testing data is provided by the `validation_data` parameter of the function, it will be used for testing.
+If it is not given, the `x` and `y` will be split by the `validation_split` parameter of the functions.
+After generating trainig and testing dataset as numpy arrays, tensorflow datasets are being build from these.
+After this the training process starts.
+While training, callbacks are care being called exacly as the [TensorFlow documentation](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/Callback) tells.
+This allows the use of callbacks like checkpoints progressbars, tensorboard and much more.
+
+Checkpoints are especially useful for cases in which the programm might crash while training.
+For our examples we also implemented an automated restoration of a previous checkpoint before the training process starts.
+To allow monitoring the losses during the training process we used tensorboard and its keras callback which adds the losses live.
+
 ## 4 Experiments
 After implementing the pix2pix model and our training process, we needed an experiment to try it out and see some results.
 Because the authors of the original pix2pix paper showed that their approach can be applied to a lot of problems, we chose four different problems for our experimenents.
