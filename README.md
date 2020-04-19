@@ -1,5 +1,5 @@
 # Pix2Pix
-#### by Malte Kleine-Piening, Raphael Marx and Christopher Bröcker (20.04.2020)
+#### by Malte Kleine-Piening, Raphael Marx and Christopher Bröcker (19.04.2020)
 
 ## 1 Motivation / Introduction
 Our group decided to implement the [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/abs/1611.07004) paper from Isola et al. (2018).
@@ -16,7 +16,7 @@ We quite like this wide applicability and the ease of adopting the model for a w
 
 In the past if you wanted to do any image-to-image translation you had to build a specialized tool for that specific task. With the introduction of CNNs and eventually GANs image prediction became a lot easier to implement.
 
-Because we are going to talk more about Generative Adversarial Networks (GANs) in the upcoming sections we should briefly explain what they are. GANs were first introduced by [Goodfellow, I. (2014)](https://papers.nips.cc/paper/5423-generative-adversarial-nets) .
+Because we are going to talk more about Generative Adversarial Networks (GANs) in the upcoming sections we should briefly explain what they are. GANs were first introduced by [Goodfellow, I. (2014)](https://papers.nips.cc/paper/5423-generative-adversarial-nets).
 
 The basic idea is that you have 2 neural networks that are trying to work against each other and therefore improve themselves. One NN is called the generator and aims to produce the best fake data that it can while the second NN is called the discriminator which gets both this fake input and real input from the dataset and tries to differentiate between the two. In our case the data that is being produced are images.
 
@@ -259,7 +259,7 @@ From these classifications (*disc_real* and *disc_fake*) we compute the discrimi
         """Calculates the loss for the discriminator based on the discriminator output of the real and fake image.
         Args:
             disc_real: discriminator output for real image
-            disc_fake: discriminator outpur for generated (fake) image
+            disc_fake: discriminator output for generated (fake) image
         """
         return tf.reduce_mean(-tf.math.log(disc_real + 1e-16) - tf.math.log(1 - disc_fake + 1e-16))
 ```
@@ -269,7 +269,7 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 ```python
     def _gen_loss(self, y, generated, disc_fake):
         """Calculates the loss for the generator based on the output, the generated image 
-        and the discriminator outpur for the generated image.
+        and the discriminator output for the generated image.
         Args:
             y: dataset output
             generated: generated output
