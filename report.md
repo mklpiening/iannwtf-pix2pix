@@ -364,11 +364,19 @@ Because both the input and output images are one dimensional, the colorization m
 ## 5 Visualization and Results
 
 ### facades
-- results worse than in the paper
-- still pretty nice
-- one could say that our implementation generally works
+We trained our facades example as described by the authors for 200 epochs.
+For the batchsize we chose 10 to improve our parallelization.
+Some results and the generator as well as the discriminator losses are shown below.
 
-- loss steady but still great improvements in later epochs <= generator trains against discriminator which results in this steady loss
+The losses do not change much after the first epochs.
+The cause for this mainly lies in the GAN architecture used in this paper.
+Both discriminator and generator try to work against earch other which results in constant losses later in the training process.
+
+One can clearly see that the results look pretty good however not as good as shown in the paper.
+Other implementations like [this online pix2pix demo](https://zaidalyafeai.github.io/pix2pix/facades.html) also have worse results than the results shown in the paper.
+
+Thr results of our first experiment show that our implementation works generally speaking.
+It is not optimized to show the best results possible with our architecture but the results are pretty decent.
 
 #### results after epoch 200
 <img src="results/facades/epoch200.png"/>
