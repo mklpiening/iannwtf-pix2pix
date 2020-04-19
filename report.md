@@ -370,9 +370,24 @@ Because both the input and output images are one dimensional, the colorization m
 
 - loss steady but still great improvements in later epochs <= generator trains against discriminator which results in this steady loss
 
+#### results after epoch 200
+<img src="results/facades/epoch200.png"/>
+<img src="results/facades/epoch200-1.png"/>
+
+#### discriminator loss
+<img src="results/facades/discriminator_loss.png"/>
+
+#### generator loss
+<img src="results/facades/generator_loss.png"/>
+
+
 ### winter to summer
 - overfitting
 - way too few samples
+
+#### results after epoch 200
+<img src="results/winter-summer/epoch200.png"/>
+
 
 ### sparse mono depth perception
 - verry nice results
@@ -380,6 +395,34 @@ Because both the input and output images are one dimensional, the colorization m
 - this could be solved by adding one output layer which only says if data is existing for this specific pixel
 - pix2pix is applicable in verry different scenaios
 
+#### results after epoch 50
+<img src="results/mono-depth-perception/epoch50.png"/>
+
+#### results after epoch 100
+<img src="results/mono-depth-perception/epoch100.png"/>
+
+#### discriminator loss
+<img src="results/mono-depth-perception/discriminator_loss.png"/>
+
+#### generator loss
+<img src="results/mono-depth-perception/generator_loss.png"/>
+
+
 ### sparse to dense depthmap
 - results even more impressive than last example
 - discriminator loss and generator loss go up in the last epochs but system still gets way better in these epochs
+
+#### results after epoch 50
+<img src="results/sparse-to-dense-depthmap/epoch50.png"/>
+
+#### results after epoch 70
+<img src="results/sparse-to-dense-depthmap/epoch70.png"/>
+
+#### results after epoch 90
+<img src="results/sparse-to-dense-depthmap/epoch90.png"/>
+
+#### discriminator loss
+<img src="results/sparse-to-dense-depthmap/discriminator_loss.png"/>
+
+#### generator loss
+<img src="results/sparse-to-dense-depthmap/generator_loss.png"/>
