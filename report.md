@@ -288,10 +288,27 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 With the Adam optimizer and these losses we update the weights of the generator and discriminator.
 
 ### 3.1 Experiments
+After implementing the pix2pix model and our training process, we needed an experiment to try it out and see some results.
+Because the authors of the original pix2pix paper showed that their approach can be applied to a lot of problems, we chose four different problems for our experimenents.
+
 #### facades
+To validate that our implementation works just as the implementation of the pix2pix authors, we chose a problem used in the original paper as our first experiment.
+From the experiments shown in the paper we selected the facades example mainly because of the low training time mentioned in the paper.
+
+The purpose of this experiment is to generate images of facades that look like real photos from dense labels of the facades elements.
+To archieve this we used the CMP Facade Dataset which was used in the paper [CMP Facade Database](http://cmp.felk.cvut.cz/~tylecr1/facade/).
+The following image shows example inputs and targets which have been taken out of the dataset.
+Each type of the labels of facade elements has its own rgb color assigned to it.
+Because the facades are labeled densely, the input is a rgb image and so is the target output which is a photograph of a real building matching the labels of the input image.
+
+<img src="misc/images/facades-dataset.png" height=106 width=389 hspace="20"/>
+
 #### winter to summer
+After reimplementing the facades example we wanted to try something different.
+To do so, we modified an example from the paper to create a new example.
+Therefor we took the day to night example and wanted to use use its dataset to create a winter to summer converter.
+
 #### sparse mono depth perception
 #### sparse to dense depthmap
-#### image unblurring
 
 ## 4 Visualization and Results
