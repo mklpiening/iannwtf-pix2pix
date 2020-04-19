@@ -285,7 +285,7 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 
 With the Adam optimizer and these losses we update the weights of the generator and discriminator.
 
-### Keas model
+### Keras model
 To ease up the implementation of new examples for our pix2pix model, we combined the generator and discriminator into one class that derives from `tf.keras.Model`.
 This class also includes the loss functions as well as the functions keras recommends to implement.
 These functions are mainly used for prediction of results, training of the model and testing of the model.
