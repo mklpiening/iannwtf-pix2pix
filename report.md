@@ -2,11 +2,11 @@
 #### by Malte Kleine-Piening, Raphael Marx and Christopher Bröcker (20.04.2020)
 
 ## 1 Motivation / Introduction
-Our group decided to implement the pix2pix paper from Isola et al. (2018).
+Our group decided to implement the [Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/abs/1611.07004) paper from Isola et al. (2018).
 
 At first we were a little confused because at first glance the pix2pix model seemed to be able to do everything. It could e.g. translate from edges to handbags, from aerial images to maps, from labels to facades and from black-and-white to color.
 
-Other papers that we looked at like "Colorful Image Colorization" only focused on one of these tasks and built a spezialized architecture just for that task.
+Other papers that we looked at like [Colorful Image Colorization](https://arxiv.org/abs/1603.08511) only focused on one of these tasks and built a spezialized architecture just for that task.
 
 The authors of the pix2pix paper, however, showed that the task in a lot of image translation problems is very similar and boils down to a more general approach: predicting pixels from pixels. Therefore they introduce a general framework that can be used on numerous different tasks.
 
@@ -23,12 +23,11 @@ The basic idea is that you have 2 neural networks that are trying to work agains
 If the generator produces an image that fools the discriminator the weights of the discriminator are adapted to better recognize the generated image and therefore improves its detection rate.
 
 The pix2pix paper doesn't use the base GANs but a variation called cGans which stands for conditional GANs. cGANs don't just learn a mapping from random noise to output image but from observed image 
-$x$ to an output image $y$. Often random noise is added to the input image $x$ to get non-deterministic results. We don't add random noise to the input, but use drop-out to generate randomness in our network while training and testing. They also (is it also or because the stuff above?) learn a structured loss which penalizes the joint configuration of the output.
+$x$ to an output image $y$. Often random noise is added to the input image $x$ to get non-deterministic results. We don't add random noise to the input, but use drop-out to generate randomness in our network while training and testing. They also learn a structured loss which penalizes the joint configuration of the output.
 
 It is also important to mention that the pix2pix paper is not the first paper to use cGANs but the first one to not build something specifically for one task.
 
 ## 3 Model
-* conditional GANs learn a structured loss which penalizes the joint configuration of the output
 
 A lot of the base architecture of the pix2pix model is based on [Radford, A. (2016)](https://arxiv.org/abs/1511.06434) who gave some architecture guidelines for deep convolutional GANs that are fully implemented in this paper: 
 
@@ -211,15 +210,14 @@ class Generator(Model):
 ```
 
 ### Discriminator
-<!--For the generator loss we use the combined loss of the discriminator and the L1-loss. The L1-loss punishes errors at the low frequencies, so we use the GAN discriminator to enforce low-frequency correctness. The discriminator only classifies if each $N * N$-Patch of the image is real or fake and is applied by convolution to the whole image. This type of discriminator is called PatchGAN and "can be understood as a form of texture/style loss". -->
 
-The discriminator gets the same input image that the generator used to create an image and an [????????] additional image, which either is the original or the generated image. It learns to discriminate between a generated and a real image.
+The discriminator gets two inputs. The first is always the input image that the generator used to create an image and the second is either the original image from the dataset or the generated image. It learns to classify the second image into the groups real (class $0$) or fake (class $1$).
 
 The authors named their specific discriminator *PatchGAN*. This discriminator only classifies if a $N * N$-patch of the image is real or fake and is applied by convolution to the whole image. Thereby it punishes local errors in the image and assumes independence to pixels outside of the patch. The results of all patches are averaged to get a classification for the whole image.
 An advantage of *PatchGAN* is that a trained discriminator can be applied to larger images than it was trained on. The paper shows that the $70 * 70$ discriminator gives a great balance between quality and training time. 
 
 Below is the smaller $16 * 16$ discriminator which also uses the described *C*-layer. Remember that each *C*-layer downsamples with $\text{kernel\_size}=4$ and $\text{strides}=2$.
-We implemented the patch sizes $N = \{16, 70, 286\}$ that can all be found in `pix2pix.ipynb`. <!-- and used the 70x70 for most experiments --- maybe put all of this in the Experiments chapter? -->
+We implemented the patch sizes $N = \{16, 70, 286\}$ that can all be found in `pix2pix.ipynb`. 
 
 ```python
 # 16 x 16 discriminator:
