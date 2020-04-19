@@ -292,9 +292,9 @@ Before training the discriminator and generator however the data will be prepare
 As a part of this process, the dataset will be split up into training and testing dataset.
 If the testing data is provided by the `validation_data` parameter of the function, it will be used for testing.
 If it is not given, the `x` and `y` will be split by the `validation_split` parameter of the functions.
-After generating trainig and testing dataset as numpy arrays, tensorflow datasets are being build from these.
+After generating training and testing dataset as numpy arrays, tensorflow datasets are being build from these.
 After this the training process starts.
-While training, callbacks are care being called exacly as the [TensorFlow documentation](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/Callback) tells.
+While training, callbacks are being called exacly as the [TensorFlow documentation](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/Callback) tells.
 This allows the use of callbacks like checkpoints progressbars, tensorboard and much more.
 
 Checkpoints are especially useful for cases in which the programm might crash while training.
