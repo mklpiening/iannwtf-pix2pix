@@ -362,3 +362,24 @@ Because both the input and output images are one dimensional, the colorization m
 <img src="misc/images/nyu-depth-dataset.png"/>
 
 ## 4 Visualization and Results
+
+#### facades
+- results worse than in the paper
+- still pretty nice
+- one could say that our implementation generally works
+
+- loss steady but still great improvements in later epochs <= generator trains against discriminator which results in this steady loss
+
+#### winter to summer
+- overfitting
+- way too few samples
+
+#### sparse mono depth perception
+- verry nice results
+- 'no data' marked as 'near by' because of close color codes of those
+- this could be solved by adding one output layer which only says if data is existing for this specific pixel
+- pix2pix is applicable in verry different scenaios
+
+#### sparse to dense depthmap
+- results even more impressive than last example
+- discriminator loss and generator loss go up in the last epochs but system still gets way better in these epochs
