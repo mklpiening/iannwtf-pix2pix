@@ -366,7 +366,8 @@ Because both the input and output images are one dimensional, the colorization m
 ### facades
 We trained our facades example as described by the authors for 200 epochs.
 For the batchsize we chose 10 to improve our parallelization.
-Some results and the generator as well as the discriminator losses are shown below.
+This resulted in a training time of abount 3 hours using one NVIDIA Geforce GTX 1080.
+Some results of our testing dataset and the generator as well as the discriminator losses are shown below.
 
 The losses do not change much after the first epochs.
 The cause for this mainly lies in the GAN architecture used in this paper.
@@ -374,6 +375,7 @@ Both discriminator and generator try to work against earch other which results i
 
 One can clearly see that the results look pretty good however not as good as shown in the paper.
 Other implementations like [this online pix2pix demo](https://zaidalyafeai.github.io/pix2pix/facades.html) also have worse results than the results shown in the paper.
+We tried differend optimizations including dividing the objective of the discriminator by two as it is described in the paper or using a batchsize of 1 but our results always turned out ro be equal or worse than the results presented here.
 
 Thr results of our first experiment show that our implementation works generally speaking.
 It is not optimized to show the best results possible with our architecture but the results are pretty decent.
@@ -390,12 +392,21 @@ It is not optimized to show the best results possible with our architecture but 
 
 
 ### winter to summer
-- overfitting
-- way too few samples
+Our second example was the conversion from winter scenes to summer scenes.
+We again used a batchsize of 10 and trained for 200 epochs.
+This took abount 2 hours on our system with the GTX 1080.
 
-#### results after epoch 200
+As already noticed in the previous section our dataset contains verry few samples which was actually a problem.
+We noticed that the network was quicky overfitting.
+This can be seen when taking a look at the results on our training dataset below.
+The generator generates correct mountains in full foggy environments and puts cars on the street when there are also cars on the street in the target images.
+Additionlly the results on our testing dataset were absolutely blurry and generally pretty bad.
+
+#### training dataset after epoch 200
 <img src="results/winter-summer/epoch200.png"/>
 
+#### testing dataset after epoch 200
+<img src="results/winter-summer/test-epoch200.png"/>
 
 ### sparse mono depth perception
 - verry nice results
