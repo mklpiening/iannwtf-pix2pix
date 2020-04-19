@@ -291,24 +291,59 @@ With the Adam optimizer and these losses we update the weights of the generator 
 After implementing the pix2pix model and our training process, we needed an experiment to try it out and see some results.
 Because the authors of the original pix2pix paper showed that their approach can be applied to a lot of problems, we chose four different problems for our experimenents.
 
+Due to the different formats of the datasets we used, we applied the random jitter described in the paper at loding time of the images.
+
 #### facades
 To validate that our implementation works just as the implementation of the pix2pix authors, we chose a problem used in the original paper as our first experiment.
 From the experiments shown in the paper we selected the facades example mainly because of the low training time mentioned in the paper.
 
 The purpose of this experiment is to generate images of facades that look like real photos from dense labels of the facades elements.
 To archieve this we used the CMP Facade Dataset which was used in the paper [CMP Facade Database](http://cmp.felk.cvut.cz/~tylecr1/facade/).
+This dataset contains about 400 data samples.
 The following image shows example inputs and targets which have been taken out of the dataset.
 Each type of the labels of facade elements has its own rgb color assigned to it.
 Because the facades are labeled densely, the input is a rgb image and so is the target output which is a photograph of a real building matching the labels of the input image.
 
-<img src="misc/images/facades-dataset.png" height=106 width=389 hspace="20"/>
+<img src="misc/images/facades-dataset.png"/>
+
+For the facades example we implemented the random jitter as described in the paper.
+So we first upscale the image to 286x286 and random crop it down to 256x256.
+Additionally we mirror half of the images from left to right like they described in the paper.
+We also use this procedure as data augmentation by using some images two or more times to increase our dataset size.
 
 #### winter to summer
 After reimplementing the facades example we wanted to try something different.
-To do so, we modified an example from the paper to create a new example.
+To do so, we modified an example from the paper to create a new experiment.
 Therefor we took the day to night example and wanted to use use its dataset to create a winter to summer converter.
 
+A similar example has been chosen for cycleGAN which is another image to image generative network.
+They however chose a summer to winter dataset they build themselves by using the flickr api while we used the [Transient Attributes for High-Level Understanding and Editing of Outdoor Scenes](http://transattr.cs.brown.edu/) which has been published by the Brown University.
+The dataset we chose contains abount 8500 images annotaed from about 100 webcams.
+
+To get only summer and winter images, we filter the dataset by their label which gives us about 300 samples when collecting some winter-summer pairs per webcam.
+This seems to be a too low number of samples to expect good results but we wanted to try this out anyways.
+The selection of multiple samples per webcam gives us a lot of random noise which removes the need of applying a random jitter.
+
+The following image shows some samples of the dataset we used for this experiment.
+
+<img src="misc/images/winter-summer-dataset.png"/>
+
 #### sparse mono depth perception
+Because of our high interest in robotics and 3D sensor data we chose some examples from this area as our next experiments.
+The first of those is the perseption of sparse depthmaps from monocular cameras.
+So the basic idea was to put a rgb image taken from a moving vehicle into the network and get a one dimensional depthmap as the output.
+
+The dataset we used for this is the depth prediction benchmark from the widely used [kitti dataset](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction).
+The dataset contains samples with rgb images and depthmaps generated from a multi layered LiDaR scan.
+Because the images and depthmaps are verry wide, we applied the random jitter by using the full height of the image and randomly cropping vertically.
+Additionally we again applied a random mirroring of the input and target images.
+
+The following image shows some samples tagen out of the dataset.
+The pixels of the depthmap colored in the darkest blue show that there is no measurement for that pixel while all other colors describe different distances.
+Yellow colored pixels are measurements of long distances and blue colored pixels are measurements of short distances.
+
+<img src="misc/images/kitti-dataset.png"/>
+
 #### sparse to dense depthmap
 
 ## 4 Visualization and Results
