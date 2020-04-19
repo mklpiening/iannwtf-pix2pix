@@ -252,18 +252,16 @@ Then the discriminator is called twice. Once with the input image and the origin
 <img src="misc/images/disc_fake.png" height=200 width=389 hspace="20"/>
 </div>
 
-From these classifications (*disc_real* and *disc_fake*) we compute the discriminator loss. The loss is minimized if the discriminator recogizes the generated image as fake (`1`) and the original image as real (`0`). #TODO Erklärung und endgültiger code 
+From these classifications (*disc_real* and *disc_fake*) we compute the discriminator loss. The loss is minimized if the discriminator recogizes the generated image as fake (`disc_fake = 1`) and the original image as real (`disc_real = 0`).
 
 ```python
     def _disc_loss(self, disc_real, disc_fake):
         """Calculates the loss for the discriminator based on the discriminator output of the real and fake image.
         Args:
             disc_real: discriminator output for real image
-            disc_fake: discriminator output for generated (fake) image
+            disc_fake: discriminator outpur for generated (fake) image
         """
-        #return self.cross_entropy(tf.ones_like(disc_real), disc_real) + self.cross_entropy(tf.zeros_like(disc_fake), disc_fake)
-        #return tf.reduce_mean(tf.math.log(disc_real)) + tf.reduce_mean(tf.math.log(1 - disc_fake))
-        return tf.reduce_mean(-(tf.math.log(disc_real + 1e-12) + tf.math.log(1 - disc_fake +  + 1e-12)))
+        return tf.reduce_mean(-tf.math.log(disc_real + 1e-16) - tf.math.log(1 - disc_fake + 1e-16))
 ```
 
 For the generator loss (*gen_loss*) the authors propose to use the discriminator output to compute the *gan_loss* and combine that value with the L1 loss. The *gan_loss* is minimized if the discriminator classifies the generated image as real. The L1 loss is the mean absolute deviation of the generated image (*generated*) from the original image. By adding this to the loss function, the generators objective is to fool the discriminator and also generate images close to the desired original image.
@@ -271,14 +269,13 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 ```python
     def _gen_loss(self, y, generated, disc_fake):
         """Calculates the loss for the generator based on the output, the generated image 
-        and the discriminator output for the generated image.
+        and the discriminator outpur for the generated image.
         Args:
             y: dataset output
             generated: generated output
             disc_fake: discriminator output for generated image
         """
-        #gan_loss = self.cross_entropy(tf.ones_like(disc_fake), disc_fake)
-        gan_loss = tf.reduce_mean(-tf.math.log(disc_fake + 1e-12))
+        gan_loss = tf.reduce_mean(-tf.math.log(disc_fake + 1e-16))
         l1_loss = tf.reduce_mean(tf.abs(y - generated))
         return gan_loss + (600 / self.output_dim) * l1_loss
 ```
