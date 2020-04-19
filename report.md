@@ -402,6 +402,8 @@ This can be seen when taking a look at the results on our training dataset below
 The generator generates correct mountains in full foggy environments and puts cars on the street when there are also cars on the street in the target images.
 Additionlly the results on our testing dataset were absolutely blurry and generally pretty bad.
 
+One could speak of a failure for this example.
+
 #### training dataset after epoch 200
 <img src="results/winter-summer/epoch200.png"/>
 
@@ -409,10 +411,22 @@ Additionlly the results on our testing dataset were absolutely blurry and genera
 <img src="results/winter-summer/test-epoch200.png"/>
 
 ### sparse mono depth perception
-- verry nice results
-- 'no data' marked as 'near by' because of close color codes of those
-- this could be solved by adding one output layer which only says if data is existing for this specific pixel
-- pix2pix is applicable in verry different scenaios
+Our third experiment was the depth perception from monocular cameras.
+We again used a batchsize of 10 and trained for 100 epochs.
+This took about 10 hours on our testing system.
+
+The results on our testing dataset and the losses are shown below.
+The results look already pretty nice after epoch 50 but are nearly perfect after epoch 100.
+The loss of the discriminator goes up for the testing dataset which looks like the discriminator is overfitting our training data.
+Our results hoever get better and better over time. 
+
+A problem with our results is that the color of the points that have no discanes is slightly lighter than in the target image.
+This lighter blue color stands for short distance which destroys the purpose of our depthmap.
+One could solve that problem by using a second output channel as kind of a alpha channel for our distances.
+This could simply be computed on the kitty dataset by filtering the target depthmap to get only the parts that have no distance assigned.
+
+This clear success in our mono depth perception example shows that pix2pix can be applied to verry different problemd from different fields of research.
+It can produce photographs on the one hand and approximate distanced by looking at images on the other hand.
 
 #### results after epoch 50
 <img src="results/mono-depth-perception/epoch50.png"/>
