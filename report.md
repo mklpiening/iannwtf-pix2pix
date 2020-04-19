@@ -442,8 +442,21 @@ It can produce photographs on the one hand and approximate distanced by looking 
 
 
 ### sparse to dense depthmap
-- results even more impressive than last example
-- discriminator loss and generator loss go up in the last epochs but system still gets way better in these epochs
+Our last example is the generation of dense depthmaps from sparse depthmaps.
+This is as described in the previous section a common problem with stereo camera systems.
+For this example we again used a batchsize of 10 and our GTX 1080 system.
+Training on this system for 90 epochs took about 8 hours.
+
+Our results on the testing dataset are again shown below.
+This time our loss got minimized until epoch 89 where suddenly a spike in both losses appeared.
+We could not explain why this happened but it did not hurt our results.
+
+The results for epoch 50 already stared closing the holes in our depthmap.
+This closing of all the holes works out pretty well after epoch 70 but is verry impressive after epoch 90.
+There only small hints abount where the holes have been and our sysetem managed to solve even hard situations like the last one shown below.
+
+This last example showed that pix2pix is really capable of being used to solve problems like depthmap generation or depthmap postprocessing which are verry different from those shown in the paper.
+One could also say that our implementation of the pix2pix network generades good looking results and works generally speaking.
 
 #### results after epoch 50
 <img src="results/sparse-to-dense-depthmap/epoch50.png"/>
