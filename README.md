@@ -383,6 +383,7 @@ Because both the input and output images are one dimensional, the colorization m
 ### facades
 We trained our facades example as described by the authors for 200 epochs.
 For the batchsize we chose 10 to improve our parallelization.
+The discriminator we chose was the 286x286 discriminator.
 This resulted in a training time of abount 3 hours using one NVIDIA Geforce GTX 1080.
 Some results of our testing dataset and the generator as well as the discriminator losses are shown below.
 
@@ -411,6 +412,7 @@ It is not optimized to show the best results possible with our architecture but 
 ### winter to summer
 Our second example was the conversion from winter scenes to summer scenes.
 We again used a batchsize of 10 and trained for 200 epochs.
+For this example we used the 70x70 discriminator. 
 This took abount 2 hours on our system with the GTX 1080.
 
 As already noticed in the previous section our dataset contains very few samples which was actually a problem.
@@ -429,7 +431,7 @@ One could speak of a failure for this example.
 
 ### sparse mono depth perception
 Our third experiment was the depth perception from monocular cameras.
-We again used a batchsize of 10 and trained for 100 epochs.
+We again used a batchsize of 10 and trained for 100 epochs using the 70x70 discriminator.
 This took about 10 hours on our testing system.
 
 The results on our testing dataset and the losses are shown below.
@@ -462,7 +464,7 @@ On the one hand it can produce photographs and on the other hand approximate dis
 Our last example is the generation of dense depthmaps from sparse depthmaps.
 This is as described in the previous section a common problem with stereo camera systems.
 For this example we again used a batchsize of 10 and our GTX 1080 system.
-Training on this system for 90 epochs took about 8 hours.
+Training on this system for 90 epochs with the 70x70 discriminator took about 8 hours.
 
 Our results on the testing dataset are again shown below.
 This time our loss got minimized until epoch 89 where suddenly a spike in both losses appeared.
