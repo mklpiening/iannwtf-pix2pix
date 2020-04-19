@@ -332,11 +332,13 @@ The following image shows some samples of the dataset we used for this experimen
 Because of our high interest in robotics and 3D sensor data we chose some examples from this area as our next experiments.
 The first of those is the perseption of sparse depthmaps from monocular cameras.
 So the basic idea was to put a rgb image taken from a moving vehicle into the network and get a one dimensional depthmap as the output.
+A System like this could be useful to cut the costs of expensive rangefinding systems in production of robotic systems or be used for LiDaR data validation in self driving automotives.
 
 The dataset we used for this is the depth prediction benchmark from the widely used [kitti dataset](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction).
 The dataset contains samples with rgb images and depthmaps generated from a multi layered LiDaR scan.
 Because the images and depthmaps are verry wide, we applied the random jitter by using the full height of the image and randomly cropping vertically.
 Additionally we again applied a random mirroring of the input and target images.
+After this jittering and data augmentation our dataset has about 2000 samples with input and target images.
 
 The following image shows some samples tagen out of the dataset.
 The pixels of the depthmap colored in the darkest blue show that there is no measurement for that pixel while all other colors describe different distances.
@@ -345,5 +347,18 @@ Yellow colored pixels are measurements of long distances and blue colored pixels
 <img src="misc/images/kitti-dataset.png"/>
 
 #### sparse to dense depthmap
+For our last experiment we wanted to use sparse depthmaps to generate dense depthmaps.
+This is a common problem when using for example stereo cameras to obtain depth information because not every part of the scene is seen by both cameras.
+Parts can be hidden from one camera but not from the other.
+Sutuations like this produce areas without depth information in the resulting depthmap.
+
+This is exacly what images of the [NYU Depth Dataset](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) look like.
+This dataset also includes precomputed and validated ground truth dense depthmaps for each of these spares depthmaps.
+Because of this and the amount of 1500 samples included in this dataset we chose the NYU Depth Dataset for our last experiment.
+
+The following image shows some examples of the dataset we selected.
+Because both the input and output images are one dimensional, the colorization matches our colorization of the target images included in the kitti dataset.
+
+<img src="misc/images/nyu-depth-dataset.png"/>
 
 ## 4 Visualization and Results
