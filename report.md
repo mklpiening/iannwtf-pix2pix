@@ -287,13 +287,13 @@ For the generator loss (*gen_loss*) the authors propose to use the discriminator
 
 With the Adam optimizer and these losses we update the weights of the generator and discriminator.
 
-### 3.1 Experiments
+## 4 Experiments
 After implementing the pix2pix model and our training process, we needed an experiment to try it out and see some results.
 Because the authors of the original pix2pix paper showed that their approach can be applied to a lot of problems, we chose four different problems for our experimenents.
 
 Due to the different formats of the datasets we used, we applied the random jitter described in the paper at loding time of the images.
 
-#### facades
+### facades
 To validate that our implementation works just as the implementation of the pix2pix authors, we chose a problem used in the original paper as our first experiment.
 From the experiments shown in the paper we selected the facades example mainly because of the low training time mentioned in the paper.
 
@@ -311,7 +311,7 @@ So we first upscale the image to 286x286 and random crop it down to 256x256.
 Additionally we mirror half of the images from left to right like they described in the paper.
 We also use this procedure as data augmentation by using some images two or more times to increase our dataset size.
 
-#### winter to summer
+### winter to summer
 After reimplementing the facades example we wanted to try something different.
 To do so, we modified an example from the paper to create a new experiment.
 Therefor we took the day to night example and wanted to use use its dataset to create a winter to summer converter.
@@ -328,7 +328,7 @@ The following image shows some samples of the dataset we used for this experimen
 
 <img src="misc/images/winter-summer-dataset.png"/>
 
-#### sparse mono depth perception
+### sparse mono depth perception
 Because of our high interest in robotics and 3D sensor data we chose some examples from this area as our next experiments.
 The first of those is the perseption of sparse depthmaps from monocular cameras.
 So the basic idea was to put a rgb image taken from a moving vehicle into the network and get a one dimensional depthmap as the output.
@@ -346,7 +346,7 @@ Yellow colored pixels are measurements of long distances and blue colored pixels
 
 <img src="misc/images/kitti-dataset.png"/>
 
-#### sparse to dense depthmap
+### sparse to dense depthmap
 For our last experiment we wanted to use sparse depthmaps to generate dense depthmaps.
 This is a common problem when using for example stereo cameras to obtain depth information because not every part of the scene is seen by both cameras.
 Parts can be hidden from one camera but not from the other.
@@ -361,25 +361,25 @@ Because both the input and output images are one dimensional, the colorization m
 
 <img src="misc/images/nyu-depth-dataset.png"/>
 
-## 4 Visualization and Results
+## 5 Visualization and Results
 
-#### facades
+### facades
 - results worse than in the paper
 - still pretty nice
 - one could say that our implementation generally works
 
 - loss steady but still great improvements in later epochs <= generator trains against discriminator which results in this steady loss
 
-#### winter to summer
+### winter to summer
 - overfitting
 - way too few samples
 
-#### sparse mono depth perception
+### sparse mono depth perception
 - verry nice results
 - 'no data' marked as 'near by' because of close color codes of those
 - this could be solved by adding one output layer which only says if data is existing for this specific pixel
 - pix2pix is applicable in verry different scenaios
 
-#### sparse to dense depthmap
+### sparse to dense depthmap
 - results even more impressive than last example
 - discriminator loss and generator loss go up in the last epochs but system still gets way better in these epochs
