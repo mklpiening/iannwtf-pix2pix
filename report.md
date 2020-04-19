@@ -291,18 +291,18 @@ With the Adam optimizer and these losses we update the weights of the generator 
 After implementing the pix2pix model and our training process, we needed an experiment to try it out and see some results.
 Because the authors of the original pix2pix paper showed that their approach can be applied to a lot of problems, we chose four different problems for our experimenents.
 
-Due to the different formats of the datasets we used, we applied the random jitter described in the paper at loding time of the images.
+Due to the different formats of the datasets we used, we applied the random jitter described in the paper at loading time of the images.
 
 ### facades
 To validate that our implementation works just as the implementation of the pix2pix authors, we chose a problem used in the original paper as our first experiment.
 From the experiments shown in the paper we selected the facades example mainly because of the low training time mentioned in the paper.
 
 The purpose of this experiment is to generate images of facades that look like real photos from dense labels of the facades elements.
-To archieve this we used the CMP Facade Dataset which was used in the paper [CMP Facade Database](http://cmp.felk.cvut.cz/~tylecr1/facade/).
+To achieve this we used the CMP Facade Dataset which was used in the paper [CMP Facade Database](http://cmp.felk.cvut.cz/~tylecr1/facade/).
 This dataset contains about 400 data samples.
 The following image shows example inputs and targets which have been taken out of the dataset.
-Each type of the labels of facade elements has its own rgb color assigned to it.
-Because the facades are labeled densely, the input is a rgb image and so is the target output which is a photograph of a real building matching the labels of the input image.
+Each type of label of facade elements has its own rgb color assigned to it.
+Because the facades are labeled densely, the input is an rgb image and so is the target output which is a photograph of a real building matching the labels of the input image.
 
 <img src="misc/images/facades-dataset.png"/>
 
@@ -314,14 +314,14 @@ We also use this procedure as data augmentation by using some images two or more
 ### winter to summer
 After reimplementing the facades example we wanted to try something different.
 To do so, we modified an example from the paper to create a new experiment.
-Therefor we took the day to night example and wanted to use use its dataset to create a winter to summer converter.
+Therefore we took the day to night example and wanted to use use its dataset to create a winter to summer converter.
 
 A similar example has been chosen for cycleGAN which is another image to image generative network.
 They however chose a summer to winter dataset they build themselves by using the flickr api while we used the [Transient Attributes for High-Level Understanding and Editing of Outdoor Scenes](http://transattr.cs.brown.edu/) which has been published by the Brown University.
-The dataset we chose contains abount 8500 images annotaed from about 100 webcams.
+The dataset we chose contains abount 8500 images annotated from about 100 webcams.
 
 To get only summer and winter images, we filter the dataset by their label which gives us about 300 samples when collecting some winter-summer pairs per webcam.
-This seems to be a too low number of samples to expect good results but we wanted to try this out anyways.
+This seems to be too low of a number of samples to expect good results but we wanted to try this out anyways.
 The selection of multiple samples per webcam gives us a lot of random noise which removes the need of applying a random jitter.
 
 The following image shows some samples of the dataset we used for this experiment.
@@ -330,17 +330,17 @@ The following image shows some samples of the dataset we used for this experimen
 
 ### sparse mono depth perception
 Because of our high interest in robotics and 3D sensor data we chose some examples from this area as our next experiments.
-The first of those is the perseption of sparse depthmaps from monocular cameras.
-So the basic idea was to put a rgb image taken from a moving vehicle into the network and get a one dimensional depthmap as the output.
+The first of those is the perception of sparse depthmaps from monocular cameras.
+So the basic idea was to put an rgb image taken from a moving vehicle into the network and get a one dimensional depthmap as the output.
 A System like this could be useful to cut the costs of expensive rangefinding systems in production of robotic systems or be used for LiDaR data validation in self driving automotives.
 
 The dataset we used for this is the depth prediction benchmark from the widely used [kitti dataset](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction).
 The dataset contains samples with rgb images and depthmaps generated from a multi layered LiDaR scan.
-Because the images and depthmaps are verry wide, we applied the random jitter by using the full height of the image and randomly cropping vertically.
+Because the images and depthmaps are very wide, we applied the random jitter by using the full height of the image and randomly cropping vertically.
 Additionally we again applied a random mirroring of the input and target images.
 After this jittering and data augmentation our dataset has about 2000 samples with input and target images.
 
-The following image shows some samples tagen out of the dataset.
+The following image shows some samples taken out of the dataset.
 The pixels of the depthmap colored in the darkest blue show that there is no measurement for that pixel while all other colors describe different distances.
 Yellow colored pixels are measurements of long distances and blue colored pixels are measurements of short distances.
 
@@ -350,10 +350,10 @@ Yellow colored pixels are measurements of long distances and blue colored pixels
 For our last experiment we wanted to use sparse depthmaps to generate dense depthmaps.
 This is a common problem when using for example stereo cameras to obtain depth information because not every part of the scene is seen by both cameras.
 Parts can be hidden from one camera but not from the other.
-Sutuations like this produce areas without depth information in the resulting depthmap.
+Situations like this produce areas without depth information in the resulting depthmap.
 
 This is exacly what images of the [NYU Depth Dataset](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html) look like.
-This dataset also includes precomputed and validated ground truth dense depthmaps for each of these spares depthmaps.
+This dataset also includes precomputed and validated ground truth dense depthmaps for each of these sparse depthmaps.
 Because of this and the amount of 1500 samples included in this dataset we chose the NYU Depth Dataset for our last experiment.
 
 The following image shows some examples of the dataset we selected.
@@ -370,14 +370,14 @@ This resulted in a training time of abount 3 hours using one NVIDIA Geforce GTX 
 Some results of our testing dataset and the generator as well as the discriminator losses are shown below.
 
 The losses do not change much after the first epochs.
-The cause for this mainly lies in the GAN architecture used in this paper.
-Both discriminator and generator try to work against earch other which results in constant losses later in the training process.
+The cause of this mainly lies in the GAN architecture used in this paper.
+Both discriminator and generator try to work against each other which results in constant losses later in the training process.
 
 One can clearly see that the results look pretty good however not as good as shown in the paper.
 Other implementations like [this online pix2pix demo](https://zaidalyafeai.github.io/pix2pix/facades.html) also have worse results than the results shown in the paper.
-We tried differend optimizations including dividing the objective of the discriminator by two as it is described in the paper or using a batchsize of 1 but our results always turned out ro be equal or worse than the results presented here.
+We tried differend optimizations including dividing the objective of the discriminator by two as it is described in the paper or using a batchsize of 1 but our results always turned out to be equal or worse than the results presented here.
 
-Thr results of our first experiment show that our implementation works generally speaking.
+The results of our first experiment show that our implementation works generally speaking.
 It is not optimized to show the best results possible with our architecture but the results are pretty decent.
 
 #### results after epoch 200
@@ -396,8 +396,8 @@ Our second example was the conversion from winter scenes to summer scenes.
 We again used a batchsize of 10 and trained for 200 epochs.
 This took abount 2 hours on our system with the GTX 1080.
 
-As already noticed in the previous section our dataset contains verry few samples which was actually a problem.
-We noticed that the network was quicky overfitting.
+As already noticed in the previous section our dataset contains very few samples which was actually a problem.
+We noticed that the network was quickly overfitting.
 This can be seen when taking a look at the results on our training dataset below.
 The generator generates correct mountains in full foggy environments and puts cars on the street when there are also cars on the street in the target images.
 Additionlly the results on our testing dataset were absolutely blurry and generally pretty bad.
@@ -418,15 +418,15 @@ This took about 10 hours on our testing system.
 The results on our testing dataset and the losses are shown below.
 The results look already pretty nice after epoch 50 but are nearly perfect after epoch 100.
 The loss of the discriminator goes up for the testing dataset which looks like the discriminator is overfitting our training data.
-Our results hoever get better and better over time. 
+Our results however get better and better over time. 
 
-A problem with our results is that the color of the points that have no discanes is slightly lighter than in the target image.
+A problem with our results is that the color of the points that have no distances is slightly lighter than in the target image.
 This lighter blue color stands for short distance which destroys the purpose of our depthmap.
-One could solve that problem by using a second output channel as kind of a alpha channel for our distances.
+One could solve that problem by using a second output channel as kind of an alpha channel for our distances.
 This could simply be computed on the kitty dataset by filtering the target depthmap to get only the parts that have no distance assigned.
 
-This clear success in our mono depth perception example shows that pix2pix can be applied to verry different problemd from different fields of research.
-It can produce photographs on the one hand and approximate distanced by looking at images on the other hand.
+This clear success in our mono depth perception example shows that pix2pix can be applied to very different problems from different fields of research.
+On the one hand it can produce photographs and on the other hand approximate distances by looking at images.
 
 #### results after epoch 50
 <img src="results/mono-depth-perception/epoch50.png"/>
@@ -451,12 +451,12 @@ Our results on the testing dataset are again shown below.
 This time our loss got minimized until epoch 89 where suddenly a spike in both losses appeared.
 We could not explain why this happened but it did not hurt our results.
 
-The results for epoch 50 already stared closing the holes in our depthmap.
-This closing of all the holes works out pretty well after epoch 70 but is verry impressive after epoch 90.
-There only small hints abount where the holes have been and our sysetem managed to solve even hard situations like the last one shown below.
+The results for epoch 50 already started closing the holes in our depthmap.
+This closing of all the holes works out pretty well after epoch 70 but is very impressive after epoch 90.
+There are only small hints about where the holes have been and our system managed to solve even hard situations like the last one shown below.
 
-This last example showed that pix2pix is really capable of being used to solve problems like depthmap generation or depthmap postprocessing which are verry different from those shown in the paper.
-One could also say that our implementation of the pix2pix network generades good looking results and works generally speaking.
+This last example showed that pix2pix is really capable of being used to solve problems like depthmap generation or depthmap postprocessing which are very different from those shown in the paper.
+One could also say that our implementation of the pix2pix network generates good looking results and works generally speaking.
 
 #### results after epoch 50
 <img src="results/sparse-to-dense-depthmap/epoch50.png"/>
