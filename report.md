@@ -23,7 +23,7 @@ The basic idea is that you have 2 neural networks that are trying to work agains
 If the generator produces an image that fools the discriminator the weights of the discriminator are adapted to better recognize the generated image and therefore improves its detection rate.
 
 The pix2pix paper doesn't use the base GANs but a variation called cGans which stands for conditional GANs. cGANs don't just learn a mapping from random noise to output image but from observed image 
-$x$ to an output image $y$. Often random noise is added to the input image $x$ to get non-deterministic results. We don't add random noise to the input, but use drop-out to generate randomness in our network while training and testing. They also learn a structured loss which penalizes the joint configuration of the output.
+`x` to an output image `y`. Often random noise is added to the input image `x` to get non-deterministic results. We don't add random noise to the input, but use drop-out to generate randomness in our network while training and testing. They also learn a structured loss which penalizes the joint configuration of the output.
 
 It is also important to mention that the pix2pix paper is not the first paper to use cGANs but the first one to not build something specifically for one task.
 
@@ -116,14 +116,14 @@ class CD(C):
 Next we will talk about the architecture of the model. 
 
 ### Generator
-The generator should take an input image and create an image with the same structure, but different appearence. The authors use an encoder-decoder structure where they first downsample the input $x$ multiple times and then upsample it again to the original dimension.
+The generator should take an input image and create an image with the same structure, but different appearence. The authors use an encoder-decoder structure where they first downsample the input `x` multiple times and then upsample it again to the original dimension.
 
 <div>
 <img src="misc/images/Encoder-decoder.png" height=200 width=336 hspace="20"/>
 <img src="misc/images/unet.png" height=200 width=336 hspace="20"/>
 </div>
 
-The downsampling creates an information bottleneck, because we lose a lot of information about where things are located. For many use cases you don't want to lose that much information while creating the new image. One example is image colorization, in which the objects displayed in input $x$ and output $y$ should be at the same position in the images. 
+The downsampling creates an information bottleneck, because we lose a lot of information about where things are located. For many use cases you don't want to lose that much information while creating the new image. One example is image colorization, in which the objects displayed in input `x` and output `y` should be at the same position in the images. 
 
 The paper from [Ronneberger, O. (2015)](https://arxiv.org/abs/1505.04597) introduced a type of CNN called UNet. The UNet is a special kind of encoder-decoder that adds skip connections between mirrored layers of the encoder and the corresponding decoder layer. By doing so we retain information about the higher resolution location and combine that during the decoding step with the output of our encoder. In the original UNet implementation they used a max pooling layer for downsampling. As said above the pix2pix authors followed the advice from [Radford, A. (2016)](https://arxiv.org/abs/1511.06434) and did not use maxpooling. 
 
@@ -211,13 +211,13 @@ class Generator(Model):
 
 ### Discriminator
 
-The discriminator gets two inputs. The first is always the input image that the generator used to create an image and the second is either the original image from the dataset or the generated image. It learns to classify the second image into the groups real (class $0$) or fake (class $1$).
+The discriminator gets two inputs. The first is always the input image that the generator used to create an image and the second is either the original image from the dataset or the generated image. It learns to classify the second image into the groups real (class `0`) or fake (class `1`).
 
-The authors named their specific discriminator *PatchGAN*. This discriminator only classifies if a $N * N$-patch of the image is real or fake and is applied by convolution to the whole image. Thereby it punishes local errors in the image and assumes independence to pixels outside of the patch. The results of all patches are averaged to get a classification for the whole image.
-An advantage of *PatchGAN* is that a trained discriminator can be applied to larger images than it was trained on. The paper shows that the $70 * 70$ discriminator gives a great balance between quality and training time. 
+The authors named their specific discriminator *PatchGAN*. This discriminator only classifies if a `N * N`-patch of the image is real or fake and is applied by convolution to the whole image. Thereby it punishes local errors in the image and assumes independence to pixels outside of the patch. The results of all patches are averaged to get a classification for the whole image.
+An advantage of *PatchGAN* is that a trained discriminator can be applied to larger images than it was trained on. The paper shows that the `70 * 70` discriminator gives a great balance between quality and training time. 
 
-Below is the smaller $16 * 16$ discriminator which also uses the described *C*-layer. Remember that each *C*-layer downsamples with $\text{kernel\_size}=4$ and $\text{strides}=2$.
-We implemented the patch sizes $N = \{16, 70, 286\}$ that can all be found in `pix2pix.ipynb`. 
+Below is the smaller `16 * 16` discriminator which also uses the described *C*-layer. Remember that each *C*-layer downsamples with `kernel_size=4` and `strides=2`.
+We implemented the patch sizes `N = 16, 70, 286` that can all be found in `pix2pix.ipynb`. 
 
 ```python
 # 16 x 16 discriminator:
@@ -252,7 +252,7 @@ Then the discriminator is called twice. Once with the input image and the origin
 <img src="misc/images/disc_fake.png" height=200 width=389 hspace="20"/>
 </div>
 
-From these classifications (*disc_real* and *disc_fake*) we compute the discriminator loss. The loss is minimized if the discriminator recogizes the generated image as fake ($1$) and the original image as real ($0$). #TODO Erklärung und endgültiger code 
+From these classifications (*disc_real* and *disc_fake*) we compute the discriminator loss. The loss is minimized if the discriminator recogizes the generated image as fake (`1`) and the original image as real (`0`). #TODO Erklärung und endgültiger code 
 
 ```python
     def _disc_loss(self, disc_real, disc_fake):
